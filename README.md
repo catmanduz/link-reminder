@@ -1,2 +1,2 @@
 # link-reminder
-Chrome extension that saves links and reminds the user to review it.
+Chrome extension that saves links and reminds the user to review them.
