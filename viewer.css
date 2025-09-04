@@ -1,0 +1,135 @@
+:root {
+    --bg: #0b0f14;
+    --panel: #0f1520;
+    --muted: #a7b1c2;
+    --text: #eff3f8;
+    --accent: #4da3ff;
+    --border: #1f2a37;
+    --danger: #ff5e66;
+}
+* {
+    box-sizing: border-box;
+}
+html,
+body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+}
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(6px);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+h1 {
+    font-size: 18px;
+    margin: 0;
+}
+.actions button {
+    margin-left: 8px;
+}
+
+.filters {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(160px, 1fr));
+    gap: 12px;
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+}
+.filters label {
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.filters input,
+.filters select {
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--text);
+}
+button {
+    appearance: none;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--text);
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+button:hover {
+    border-color: var(--accent);
+}
+button.danger {
+    border-color: var(--danger);
+    color: var(--danger);
+}
+button.ghost {
+    background: transparent;
+}
+
+main {
+    padding: 0 16px 16px;
+}
+#results {
+    width: 100%;
+    border-collapse: collapse;
+}
+#results thead th {
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 8px;
+}
+#results tbody td {
+    border-bottom: 1px solid var(--border);
+    padding: 12px 8px;
+    vertical-align: top;
+}
+#results tbody tr:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+.title a.link {
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 600;
+}
+.title .url {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+    word-break: break-all;
+}
+.domain,
+.category,
+.keywords,
+.added {
+    font-size: 13px;
+    color: var(--text);
+}
+footer {
+    padding: 12px 16px;
+    color: var(--muted);
+    font-size: 12px;
+    border-top: 1px solid var(--border);
+}
+.ops button {
+    border: 0;
+    background: transparent;
+    font-size: 16px;
+    cursor: pointer;
+}

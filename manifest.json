@@ -1,0 +1,24 @@
+{
+    "manifest_version": 3,
+    "name": "Link Reminder",
+    "description": "Save links with categories and up to 3 keywords, then search by category, keyword, domain, or URL.",
+    "version": "1.0.0",
+    "action": {
+        "default_title": "Link Reminder",
+        "default_popup": "popup.html"
+    },
+    "background": {
+        "service_worker": "background.js"
+    },
+    "permissions": ["storage", "tabs", "contextMenus"],
+    "commands": {
+        "save_current_tab": {
+            "suggested_key": { "default": "Ctrl+Shift+S", "mac": "Command+Shift+S" },
+            "description": "Open the save window for the current tab"
+        },
+        "open_library": {
+            "suggested_key": { "default": "Ctrl+Shift+L", "mac": "Command+Shift+L" },
+            "description": "Open the Link Reminder Library"
+        }
+    }
+}
