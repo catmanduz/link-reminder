@@ -14,6 +14,36 @@ async function init() {
     const categorySelect = document.getElementById("categorySelect");
     const newCategoryEl = document.getElementById("newCategory");
     const statusEl = document.getElementById("status");
+    const reminderAtEl = document.getElementById("reminderAt");
+    const customEl = document.getElementById("customReminder");
+    let selectedQuickBtn = null;
+
+    // quick buttons
+    document.querySelectorAll(".reminder .quick button[data-mins]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            if (selectedQuickBtn) selectedQuickBtn.classList.remove("active");
+            selectedQuickBtn = btn;
+            btn.classList.add("active");
+            customEl.value = "";
+            const mins = parseInt(btn.dataset.mins, 10);
+            reminderAtEl.value = String(Date.now() + mins * 60_000);
+        });
+    });
+    document.getElementById("clearReminder").addEventListener("click", () => {
+        if (selectedQuickBtn) selectedQuickBtn.classList.remove("active");
+        selectedQuickBtn = null;
+        reminderAtEl.value = "";
+        customEl.value = "";
+    });
+
+    // custom datetime
+    customEl.addEventListener("input", () => {
+        if (selectedQuickBtn) selectedQuickBtn.classList.remove("active");
+        selectedQuickBtn = null;
+        const v = customEl.value; // "YYYY-MM-DDTHH:MM"
+        const t = v ? new Date(v).getTime() : NaN;
+        reminderAtEl.value = Number.isFinite(t) ? String(t) : "";
+    });
 
     // Get active tab info
     const [tab] = await tabsQuery({ active: true, currentWindow: true });
@@ -60,6 +90,7 @@ async function init() {
             keywords: kw,
             addedAt: existingIdx !== -1 ? links[existingIdx].addedAt : now,
             updatedAt: now,
+            reminderAt,
         };
 
         if (existingIdx !== -1) {
@@ -68,8 +99,18 @@ async function init() {
             links.unshift(record);
         }
 
+        const whenStr = reminderAtEl.value.trim();
+        record.reminderAt = whenStr ? Number(whenStr) : undefined;
+
         const nextCats = Array.from(new Set([...(categories || []), category]));
         await storageSet({ links, categories: nextCats });
+
+        // Schedule or clear alarm
+        const alarmName = (id) => `lr:rem:${id}`;
+        await new Promise((r) => chrome.alarms.clear(alarmName(record.id), r));
+        if (record.reminderAt && record.reminderAt > Date.now()) {
+            chrome.alarms.create(alarmName(record.id), { when: record.reminderAt });
+        }
 
         setStatus("Saved ✔");
         setTimeout(() => window.close(), 450);

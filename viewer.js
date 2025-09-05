@@ -84,6 +84,7 @@ function render() {
         frag.querySelector(".domain").textContent = rec.domain || safeDomain(rec.url);
         frag.querySelector(".category").textContent = rec.category || "Uncategorized";
         frag.querySelector(".keywords").textContent = (rec.keywords || []).join(", ") || "—";
+        frag.querySelector(".reminder").textContent = rec.reminderAt ? new Date(rec.reminderAt).toLocaleString() : "—";
         frag.querySelector(".added").textContent = formatDate(rec.addedAt);
 
         tbody.appendChild(frag);

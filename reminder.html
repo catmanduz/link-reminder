@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Link Reminder · Snooze</title>
+        <link rel="stylesheet" href="reminder.css" />
+    </head>
+    <body>
+        <div class="wrap">
+            <h1>Snooze Reminder</h1>
+            <div class="info">
+                <div class="title" id="title">—</div>
+                <a id="link" href="#" target="_blank" rel="noopener">Open link</a>
+            </div>
+
+            <fieldset class="snooze">
+                <legend>Snooze for</legend>
+                <div class="quick">
+                    <button type="button" data-mins="60">1h</button>
+                    <button type="button" data-mins="120">2h</button>
+                    <button type="button" data-mins="240">4h</button>
+                    <button type="button" data-mins="480">8h</button>
+                    <button type="button" data-mins="4320">3d</button>
+                    <button type="button" data-mins="10080">1w</button>
+                </div>
+                <label class="custom"
+                    >Or pick date & time
+                    <input type="datetime-local" id="customWhen" />
+                </label>
+            </fieldset>
+
+            <div class="actions">
+                <button id="save" class="primary">Save Snooze</button>
+                <button id="cancel" class="ghost">Cancel</button>
+            </div>
+        </div>
+        <script type="module" src="reminder.js"></script>
+    </body>
+</html>

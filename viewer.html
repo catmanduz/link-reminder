@@ -1,66 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Link Reminder · Library</title>
-<link rel="stylesheet" href="viewer.css" />
-</head>
-<body>
-<header>
-<h1>Link Reminder — Library</h1>
-<div class="actions">
-<button id="refresh">Refresh</button>
-<button id="export">Export JSON</button>
-<button id="clearAll" class="danger">Clear All</button>
-</div>
-</header>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Link Reminder · Library</title>
+        <link rel="stylesheet" href="viewer.css" />
+    </head>
+    <body>
+        <header>
+            <h1>Link Reminder — Library</h1>
+            <div class="actions">
+                <button id="refresh">Refresh</button>
+                <button id="export">Export JSON</button>
+                <button id="clearAll" class="danger">Clear All</button>
+            </div>
+        </header>
 
+        <section class="filters">
+            <label
+                >Category
+                <select id="fCategory"></select>
+            </label>
+            <label
+                >Keyword(s)
+                <input type="text" id="fKeyword" placeholder="comma or space separated" />
+            </label>
+            <label
+                >Domain
+                <input type="text" id="fDomain" placeholder="e.g. example.com" />
+            </label>
+            <label
+                >URL contains
+                <input type="text" id="fUrl" placeholder="substring match" />
+            </label>
+            <button id="resetFilters" class="ghost">Reset</button>
+        </section>
 
-<section class="filters">
-<label>Category
-<select id="fCategory"></select>
-</label>
-<label>Keyword(s)
-<input type="text" id="fKeyword" placeholder="comma or space separated" />
-</label>
-<label>Domain
-<input type="text" id="fDomain" placeholder="e.g. example.com" />
-</label>
-<label>URL contains
-<input type="text" id="fUrl" placeholder="substring match" />
-</label>
-<button id="resetFilters" class="ghost">Reset</button>
-</section>
+        <main>
+            <table id="results">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Domain</th>
+                        <th>Category</th>
+                        <th>Keywords</th>
+                        <th>Reminder</th>
+                        <th>Added</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </main>
 
+        <footer>
+            <span id="count">0 items</span>
+        </footer>
 
-<main>
-<table id="results">
-<thead>
-<tr>
-<th>Title</th>
-<th>Domain</th>
-<th>Category</th>
-<th>Keywords</th>
-<th>Added</th>
-<th></th>
-</tr>
-</thead>
-<tbody></tbody>
-</table>
-</main>
+        <template id="rowTemplate">
+            <tr>
+                <td class="title">
+                    <a class="link" target="_blank" rel="noopener">—</a>
+                    <div class="url"></div>
+                </td>
+                <td class="domain">—</td>
+                <td class="category">—</td>
+                <td class="keywords">—</td>
+                <td class="reminder">—</td>
+                <td class="added">—</td>
+                <td class="ops">
+                    <button data-op="delete" title="Delete">🗑</button>
+                </td>
+            </tr>
+        </template>
 
-
-<footer>
-<span id="count">0 items</span>
-</footer>
-
-
-<template id="rowTemplate">
-<tr>
-<td class="title">
-<a class="link" target="_blank" rel="noopener">—</a>
-<div class="url"></div>
-</td>
-<td class="domain">—</td>
+        <!-- Use ES module so top-level await is allowed in the viewer if needed -->
+        <script type="module" src="viewer.js"></script>
+    </body>
 </html>

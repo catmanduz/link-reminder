@@ -38,6 +38,23 @@
                     <input type="text" id="kw2" placeholder="keyword 2" maxlength="40" />
                     <input type="text" id="kw3" placeholder="keyword 3" maxlength="40" />
                 </fieldset>
+                <fieldset class="reminder">
+                    <legend>Reminder (optional)</legend>
+                    <div class="quick">
+                        <button type="button" data-mins="60">1h</button>
+                        <button type="button" data-mins="120">2h</button>
+                        <button type="button" data-mins="240">4h</button>
+                        <button type="button" data-mins="480">8h</button>
+                        <button type="button" data-mins="4320">3d</button>
+                        <button type="button" data-mins="10080">1w</button>
+                        <button type="button" id="clearReminder" class="ghost">Clear</button>
+                    </div>
+                    <label class="custom"
+                        >Custom date & time
+                        <input type="datetime-local" id="customReminder" />
+                    </label>
+                    <input type="hidden" id="reminderAt" />
+                </fieldset>
 
                 <button type="submit" class="primary">Save</button>
                 <button type="button" id="openLibrary" class="ghost">Open Library</button>
