@@ -1,6 +1,6 @@
 // Link Reminder — background script (MV3 service worker, ES module)
 // This file is loaded as a module via manifest.json (type: "module").
-// We use tiny promise wrappers so await works consistently.
+// We use tiny promise wrappers so `await` works consistently.
 
 const DEFAULT_CATEGORY = "Uncategorized";
 
