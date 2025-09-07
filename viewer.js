@@ -1,3 +1,6 @@
+// viewer.js — clean build (no reminder column)
+// Renders saved links and supports filtering & delete.
+
 let state = { links: [], categories: [] };
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -39,8 +42,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 async function loadData() {
     const { links = [], categories = [] } = await chrome.storage.local.get(["links", "categories"]);
-    // Sort newest first
-    state.links = links.sort((a, b) => (b.addedAt || 0) - (a.addedAt || 0));
+    // newest first
+    state.links = links.slice().sort((a, b) => (b.addedAt || 0) - (a.addedAt || 0));
     state.categories = Array.from(new Set(["Any", "Uncategorized", ...categories]))
         .filter(Boolean)
         .sort((a, b) => a.localeCompare(b));
@@ -53,6 +56,7 @@ function initFilters() {
     ["fCategory", "fKeyword", "fDomain", "fUrl"].forEach((id) => {
         document.getElementById(id).addEventListener("input", render);
     });
+
     document.getElementById("resetFilters").addEventListener("click", () => {
         fCategory.value = "Any";
         document.getElementById("fKeyword").value = "";
@@ -84,7 +88,6 @@ function render() {
         frag.querySelector(".domain").textContent = rec.domain || safeDomain(rec.url);
         frag.querySelector(".category").textContent = rec.category || "Uncategorized";
         frag.querySelector(".keywords").textContent = (rec.keywords || []).join(", ") || "—";
-        frag.querySelector(".reminder").textContent = rec.reminderAt ? new Date(rec.reminderAt).toLocaleString() : "—";
         frag.querySelector(".added").textContent = formatDate(rec.addedAt);
 
         tbody.appendChild(frag);
@@ -94,79 +97,76 @@ function render() {
 }
 
 function currentFilters() {
-};
+    return {
+        category: document.getElementById("fCategory").value,
+        keywords: splitKeywords(document.getElementById("fKeyword").value),
+        domain: (document.getElementById("fDomain").value || "").toLowerCase().trim(),
+        urlq: (document.getElementById("fUrl").value || "").toLowerCase().trim(),
+    };
 }
-
 
 function applyFilters(items, f) {
-return items.filter((it) => {
-// Category
-if (f.category && f.category !== "Any") {
-const cat = (it.category || "Uncategorized");
-if (cat !== f.category) return false;
+    return items.filter((it) => {
+        // Category exact
+        if (f.category && f.category !== "Any") {
+            const cat = it.category || "Uncategorized";
+            if (cat !== f.category) return false;
+        }
+        // Domain substring (normalized)
+        if (f.domain) {
+            const dom = (it.domain || safeDomain(it.url) || "").toLowerCase();
+            if (!dom.includes(f.domain)) return false;
+        }
+        // URL substring
+        if (f.urlq) {
+            if (!(it.url || "").toLowerCase().includes(f.urlq)) return false;
+        }
+        // Keywords: match ANY
+        if (f.keywords.length) {
+            const kws = (it.keywords || []).map((k) => k.toLowerCase());
+            const hit = f.keywords.some((q) => kws.includes(q) || kws.some((k) => k.includes(q)));
+            if (!hit) return false;
+        }
+        return true;
+    });
 }
-
-
-// Domain (substring match, normalized)
-if (f.domain) {
-const dom = (it.domain || safeDomain(it.url) || "").toLowerCase();
-if (!dom.includes(f.domain)) return false;
-}
-
-
-// URL contains
-if (f.urlq) {
-if (!(it.url || "").toLowerCase().includes(f.urlq)) return false;
-}
-
-
-// Keywords (match ANY provided keyword)
-if (f.keywords.length) {
-const kws = (it.keywords || []).map(k => k.toLowerCase());
-const hit = f.keywords.some(q => kws.includes(q) || kws.some(k => k.includes(q)));
-if (!hit) return false;
-}
-
-
-return true;
-});
-}
-
 
 function splitKeywords(s) {
-return (s || "")
-.split(/[\s,]+/)
-.map(x => x.trim().toLowerCase())
-.filter(Boolean);
+    return (s || "")
+        .split(/[\s,]+/)
+        .map((x) => x.trim().toLowerCase())
+        .filter(Boolean);
 }
-
 
 function safeDomain(url) {
-try { return new URL(url).hostname.replace(/^www\./, ""); } catch { return ""; }
+    try {
+        return new URL(url).hostname.replace(/^www\./, "");
+    } catch {
+        return "";
+    }
 }
-
 
 function formatDate(ts) {
-if (!ts) return "—";
-try {
-const d = new Date(ts);
-return d.toLocaleString();
-} catch { return "—"; }
+    if (!ts) return "—";
+    try {
+        return new Date(ts).toLocaleString();
+    } catch {
+        return "—";
+    }
 }
-
 
 function escapeHtml(s = "") {
-return s.replace(/[&<>"']/g, (c) => ({
-"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-})[c]);
+    return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
-
 function exportJson() {
-const blob = new Blob([JSON.stringify(state.links, null, 2)], { type: "application/json" });
-const url = URL.createObjectURL(blob);
-const a = document.createElement("a");
-a.href = url; a.download = `link-reminder-export-${Date.now()}.json`;
-document.body.appendChild(a); a.click(); a.remove();
-URL.revokeObjectURL(url);
+    const blob = new Blob([JSON.stringify(state.links, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `link-reminder-export-${Date.now()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
 }
